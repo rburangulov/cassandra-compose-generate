@@ -1,0 +1,50 @@
+version: '3'
+services:
+  spark-master:
+    image: docker.io/bitnami/spark:3-debian-10
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    ports:
+      - '8080:8080'
+{% set nodes_count = nodes_count|int %}
+{% for user in range(nodes_count) %}
+  cassandra-{{loop.index}}:
+    image: cassandra:3.11.8
+    container_name: cassandra-{{loop.index}}
+    hostname: cassandra-{{loop.index}}
+    deploy:
+      resources:
+        limits:
+          cpus: '{{cassandra_cpu_limit}}'
+          memory: {{cassandra_memory_limit}}
+    ports:
+      - "9042:9042"
+    volumes:
+      - ./data/cassandra-{{loop.index}}:/var/lib/cassandra
+    environment:
+      - CASSANDRA_SEEDS=cassandra-1
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=cassandra
+      - MAX_HEAP_SIZE={{cassandra_memory_limit}}
+  spark-worker-{{loop.index}}:
+    image: docker.io/bitnami/spark:3-debian-10
+    container_name: spark-worker-{{loop.index}}
+    deploy:
+      resources:
+        limits:
+          cpus: '{{spark_cpu_limit}}'
+          memory: {{spark_memory_limit}}
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY={{spark_memory_limit}}
+      - SPARK_WORKER_CORES={{spark_cpu_limit}}
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+{% endfor %}

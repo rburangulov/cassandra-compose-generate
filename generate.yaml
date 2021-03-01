@@ -1,0 +1,6 @@
+- name: Generate docker-compose.yml
+  hosts: localhost
+  tasks:
+  - template:
+      src: docker-compose.template
+      dest: docker-compose.yml
