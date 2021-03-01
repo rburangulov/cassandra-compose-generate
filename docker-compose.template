@@ -11,7 +11,7 @@ services:
     ports:
       - '8080:8080'
 {% set nodes_count = nodes_count|int %}
-{% for user in range(nodes_count) %}
+{% for node in range(nodes_count) %}
   cassandra-{{loop.index}}:
     image: cassandra:3.11.8
     container_name: cassandra-{{loop.index}}
