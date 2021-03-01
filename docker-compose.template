@@ -24,7 +24,7 @@ services:
           memory: {{cassandra_memory_limit}}
     ports:
 {% set cassandra_port = 9041 + loop.index %}
-      - "9042:{{cassandra_port}}"
+      - "{{cassandra_port}}:9042"
     volumes:
       - ./data/cassandra-{{loop.index}}:/var/lib/cassandra
     environment:
