@@ -2,6 +2,7 @@ version: '3'
 services:
   spark-master:
     image: docker.io/bitnami/spark:3-debian-10
+    container_name: spark-master
     environment:
       - SPARK_MODE=master
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
