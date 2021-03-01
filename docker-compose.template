@@ -21,7 +21,6 @@ services:
       resources:
         limits:
           cpus: '{{cassandra_cpu_limit}}'
-          memory: {{cassandra_memory_limit}}
     ports:
 {% set cassandra_port = 9041 + loop.index %}
       - "{{cassandra_port}}:9042"
