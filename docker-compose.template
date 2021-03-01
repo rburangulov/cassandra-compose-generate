@@ -22,13 +22,15 @@ services:
           cpus: '{{cassandra_cpu_limit}}'
           memory: {{cassandra_memory_limit}}
     ports:
-      - "9042:9042"
+{% set cassandra_port = 9041 + loop.index %}
+      - "9042:{{cassandra_port}}"
     volumes:
       - ./data/cassandra-{{loop.index}}:/var/lib/cassandra
     environment:
       - CASSANDRA_SEEDS=cassandra-1
       - CASSANDRA_PASSWORD_SEEDER=yes
       - CASSANDRA_PASSWORD=cassandra
+      - HEAP_NEWSIZE=128M
       - MAX_HEAP_SIZE={{cassandra_memory_limit}}
   spark-worker-{{loop.index}}:
     image: docker.io/bitnami/spark:3-debian-10
