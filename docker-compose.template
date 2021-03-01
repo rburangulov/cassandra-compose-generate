@@ -25,7 +25,7 @@ services:
 {% set cassandra_port = 9041 + loop.index %}
       - "{{cassandra_port}}:9042"
     volumes:
-      - ./data/cassandra-{{loop.index}}:/var/lib/cassandra
+      - /data/cassandra-{{loop.index}}:/var/lib/cassandra
     environment:
       - CASSANDRA_SEEDS=cassandra-1
       - CASSANDRA_PASSWORD_SEEDER=yes
